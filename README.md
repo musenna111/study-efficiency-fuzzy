@@ -1,48 +1,70 @@
 # Akıllı Ders Çalışma Verimlilik Sistemi
 
-Bu proje, bulanık mantık yöntemi kullanılarak öğrencinin ders çalışma verimliliğini analiz eden Python tabanlı bir karar destek sistemidir.
+Bu proje, bulanık mantık (Fuzzy Logic) kullanılarak öğrencilerin ders çalışma verimliliğini analiz eden bir karar destek sistemidir. Sistem; çalışma süresi, telefon kullanımı, uyku kalitesi ve mola düzeni gibi parametreleri değerlendirerek 0-100 arasında bir verimlilik skoru üretmektedir.
 
 ## Proje Amacı
 
-Sistem; çalışma süresi, telefon kullanımı, uyku kalitesi ve mola düzeni gibi değişkenleri değerlendirerek öğrencinin verimlilik skorunu hesaplar.
+Günümüzde öğrencilerin çalışma performansı birçok farklı faktörden etkilenmektedir. Bu projede, kesin sınırlar yerine insan düşünce yapısına daha yakın sonuçlar üretebilmek için bulanık mantık yaklaşımı kullanılmıştır.
 
-## Kullanılan Teknolojiler
+Sistem sayesinde kullanıcı:
+
+- Verimlilik skorunu görebilir
+- Verimlilik seviyesini öğrenebilir
+- Üyelik fonksiyonlarını inceleyebilir
+- Durulaştırma (defuzzification) sürecini analiz edebilir
+- Aktif kuralları görüntüleyebilir
+
+---
+
+# Kullanılan Teknolojiler
 
 - Python
 - Streamlit
 - NumPy
-- SciPy
-- Scikit-Fuzzy
 - Matplotlib
+- Scikit-Fuzzy
 
-## Giriş Değişkenleri
+---
 
-| Değişken | Aralık | Dilsel Değerler |
-|---|---:|---|
-| Çalışma Süresi | 0 - 8 saat | Düşük, Orta, Yüksek |
-| Telefon Kullanımı | 0 - 6 saat | Az, Orta, Fazla |
-| Uyku Kalitesi | 0 - 10 | Kötü, Orta, İyi |
-| Mola Düzeni | 0 - 10 | Yetersiz, Dengeli, Aşırı |
+# Girdi Parametreleri
 
-## Çıkış Değişkeni
+Sistem 4 farklı girdi parametresi kullanmaktadır:
 
-| Değişken | Aralık | Dilsel Değerler |
-|---|---:|---|
-| Verimlilik Skoru | 0 - 100 | Düşük, Orta, Yüksek, Çok Yüksek |
+| Parametre | Açıklama |
+|---|---|
+| Çalışma Süresi | Günlük ders çalışma süresi |
+| Telefon Kullanımı | Günlük telefon kullanım süresi |
+| Uyku Kalitesi | Uyku düzeni ve kalitesi |
+| Mola Düzeni | Ders çalışma sırasındaki mola düzeni |
 
-## Bulanık Mantık Yöntemi
+---
 
-Projede Mamdani tipi bulanık çıkarım sistemi kullanılmıştır. Giriş değerleri üyelik fonksiyonları ile bulanıklaştırılmış, kural tabanı üzerinden çıkarım yapılmış ve sonuç centroid yöntemiyle durulaştırılmıştır.
+# Çıktı
 
-## Proje Dosyaları
+Sistem aşağıdaki verimlilik seviyelerini üretmektedir:
 
-```text
-study_efficiency_fuzzy/
-│
-├── app.py
-├── fuzzy_system.py
-├── plots.py
-├── test_scenarios.py
-├── README.md
-├── rapor.md
-└── requirements.txt
+- Düşük
+- Orta
+- Yüksek
+- Çok Yüksek
+
+---
+
+# Özellikler
+
+- Bulanık üyelik fonksiyonları
+- Kural tabanlı çıkarım sistemi
+- Centroid durulaştırma yöntemi
+- Grafiksel analiz ekranları
+- Aktif kural görüntüleme
+- Etkileşimli Streamlit arayüzü
+
+---
+
+# Kurulum
+
+Projeyi çalıştırmak için:
+
+```bash
+git clone https://github.com/musenna111/study-efficiency-fuzzy.git
+cd study-efficiency-fuzzy
