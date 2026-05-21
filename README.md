@@ -2,11 +2,12 @@
 
 Bu projede bulanık mantık kullanılarak öğrencilerin ders çalışma verimliliği analiz edilmesi amaçlanmıştır.
 
-Sistem; çalışma süresi, telefon kullanımı, uyku kalitesi ve mola düzeni gibi parametreleri değerlendirerek kullanıcı için verimlilik skoru üretmektedir.
+Sistem; çalışma süresi, telefon kullanımı, uyku kalitesi ve mola düzeni gibi parametreleri değerlendirerek IF–AND–THEN yapısındaki bulanık kurallar yardımıyla 0-100 arasında bir verimlilik skoru üretmektedir.
 
 Proje içerisinde:
 
 - Mamdani tipi bulanık çıkarım sistemi
+- IF–AND–THEN yapısında 18 adet bulanık kural
 - Centroid durulaştırma yöntemi
 - Üyelik fonksiyonları
 - Aktif kural analizi
@@ -37,6 +38,36 @@ Sistem aşağıdaki giriş değişkenlerini kullanmaktadır:
 - Mola Düzeni
 
 Bu parametreler bulanık kümeler yardımıyla değerlendirilerek verimlilik skoru oluşturulmaktadır.
+
+---
+
+# Özellikler
+
+- Mamdani tipi bulanık çıkarım sistemi
+- IF–AND–THEN yapısında 18 adet bulanık kural
+- Bulanık üyelik fonksiyonları
+- Centroid (Ağırlık Merkezi) durulaştırma yöntemi
+- Aktif kural analizi
+- Grafiksel üyelik fonksiyonları
+- Durulaştırma grafikleri
+- Etkileşimli Streamlit arayüzü
+
+---
+
+# Kural Tabanı
+
+Sistemde IF–AND–THEN mantığı ile oluşturulmuş toplam 18 adet bulanık kural bulunmaktadır.
+
+Örnek kurallar:
+
+- IF çalışma yüksek AND telefon az AND uyku iyi THEN verimlilik çok yüksek
+- IF çalışma yüksek AND telefon orta AND uyku iyi THEN verimlilik yüksek
+- IF çalışma düşük AND telefon fazla THEN verimlilik düşük
+- IF uyku kötü AND telefon fazla THEN verimlilik düşük
+- IF çalışma orta AND telefon orta AND uyku orta THEN verimlilik orta
+- IF telefon az AND uyku iyi AND mola dengeli THEN verimlilik çok yüksek
+
+Kuralların aktivasyon değerleri minimum (min) operatörü ile hesaplanmaktadır. Daha sonra Mamdani çıkarım yöntemi uygulanarak aktif kuralların çıkış kümeleri birleştirilmektedir.
 
 ---
 
@@ -200,6 +231,7 @@ Farklı giriş kombinasyonları üzerinde yapılan testlerde sistemin mantıklı
 - Kullanıcı dostu arayüz
 - Esnek bulanık mantık yapısı
 - Belirsiz durumları daha gerçekçi değerlendirebilmesi
+- Aktif kuralların kullanıcıya açık şekilde gösterilmesi
 
 ---
 
@@ -268,11 +300,11 @@ streamlit run app.py
 
 # Sonuç
 
-Bu projede bulanık mantık kullanılarak öğrencilerin ders çalışma verimliliği analiz edilmiştir.
+Bu projede bulanık mantık yaklaşımı kullanılarak öğrencilerin ders çalışma verimliliğini analiz eden kural tabanlı bir karar destek sistemi geliştirilmiştir.
 
-Sistem; çalışma süresi, telefon kullanımı, uyku kalitesi ve mola düzeni gibi parametreleri değerlendirerek kullanıcı için verimlilik skoru üretmektedir.
+Sistem içerisinde Mamdani çıkarım yöntemi, bulanık üyelik fonksiyonları, IF–AND–THEN kuralları ve centroid durulaştırma yöntemi birlikte kullanılmıştır.
 
-Mamdani çıkarım sistemi ve centroid durulaştırma yöntemi kullanılarak farklı senaryolar üzerinde mantıklı ve tutarlı sonuçlar elde edilmiştir.
+Farklı test senaryolarında sistemin mantıklı ve tutarlı sonuçlar ürettiği gözlemlenmiştir.
 
 Grafiksel analizler sayesinde üyelik fonksiyonları, aktif kurallar ve durulaştırma süreçleri görsel olarak incelenebilmektedir.
 

@@ -59,17 +59,6 @@ def get_efficiency_level(score):
         return "Çok Yüksek Verimlilik"
 
 
-def output_label_from_score(rule_score):
-    if rule_score < 38:
-        return "Düşük"
-    elif rule_score < 63:
-        return "Orta"
-    elif rule_score < 82:
-        return "Yüksek"
-    else:
-        return "Çok Yüksek"
-
-
 def calculate_efficiency(study_hours, phone_hours, sleep_quality, break_quality):
     mfs = get_membership_functions()
 
@@ -92,72 +81,115 @@ def calculate_efficiency(study_hours, phone_hours, sleep_quality, break_quality)
         },
     }
 
-    study_scores = {
-        "Düşük": 15,
-        "Orta": 58,
-        "Yüksek": 92,
-    }
-
-    phone_scores = {
-        "Az": 95,
-        "Orta": 55,
-        "Fazla": 15,
-    }
-
-    sleep_scores = {
-        "Kötü": 15,
-        "Orta": 58,
-        "İyi": 92,
-    }
-
-    break_scores = {
-        "Yetersiz": 35,
-        "Dengeli": 90,
-        "Aşırı": 30,
-    }
-
     aggregated = np.zeros_like(efficiency_x)
     active_rules = []
 
-    for study_label, study_degree in memberships["study"].items():
-        for phone_label, phone_degree in memberships["phone"].items():
-            for sleep_label, sleep_degree in memberships["sleep"].items():
-                for break_label, break_degree in memberships["break"].items():
+    rules = [
+        (
+            "IF çalışma yüksek AND telefon az AND uyku iyi THEN verimlilik çok yüksek",
+            min(memberships["study"]["Yüksek"], memberships["phone"]["Az"], memberships["sleep"]["İyi"]),
+            "Çok Yüksek"
+        ),
+        (
+            "IF çalışma yüksek AND telefon orta AND uyku iyi THEN verimlilik yüksek",
+            min(memberships["study"]["Yüksek"], memberships["phone"]["Orta"], memberships["sleep"]["İyi"]),
+            "Yüksek"
+        ),
+        (
+            "IF çalışma yüksek AND mola dengeli THEN verimlilik yüksek",
+            min(memberships["study"]["Yüksek"], memberships["break"]["Dengeli"]),
+            "Yüksek"
+        ),
+        (
+            "IF çalışma yüksek AND telefon fazla THEN verimlilik orta",
+            min(memberships["study"]["Yüksek"], memberships["phone"]["Fazla"]),
+            "Orta"
+        ),
+        (
+            "IF çalışma orta AND telefon az AND uyku iyi THEN verimlilik yüksek",
+            min(memberships["study"]["Orta"], memberships["phone"]["Az"], memberships["sleep"]["İyi"]),
+            "Yüksek"
+        ),
+        (
+            "IF çalışma orta AND telefon orta AND uyku orta THEN verimlilik orta",
+            min(memberships["study"]["Orta"], memberships["phone"]["Orta"], memberships["sleep"]["Orta"]),
+            "Orta"
+        ),
+        (
+            "IF çalışma orta AND mola dengeli THEN verimlilik orta",
+            min(memberships["study"]["Orta"], memberships["break"]["Dengeli"]),
+            "Orta"
+        ),
+        (
+            "IF çalışma orta AND telefon fazla THEN verimlilik düşük",
+            min(memberships["study"]["Orta"], memberships["phone"]["Fazla"]),
+            "Düşük"
+        ),
+        (
+            "IF çalışma düşük AND telefon az AND uyku iyi THEN verimlilik orta",
+            min(memberships["study"]["Düşük"], memberships["phone"]["Az"], memberships["sleep"]["İyi"]),
+            "Orta"
+        ),
+        (
+            "IF çalışma düşük AND telefon orta THEN verimlilik düşük",
+            min(memberships["study"]["Düşük"], memberships["phone"]["Orta"]),
+            "Düşük"
+        ),
+        (
+            "IF çalışma düşük AND telefon fazla THEN verimlilik düşük",
+            min(memberships["study"]["Düşük"], memberships["phone"]["Fazla"]),
+            "Düşük"
+        ),
+        (
+            "IF uyku kötü AND telefon fazla THEN verimlilik düşük",
+            min(memberships["sleep"]["Kötü"], memberships["phone"]["Fazla"]),
+            "Düşük"
+        ),
+        (
+            "IF uyku kötü AND çalışma düşük THEN verimlilik düşük",
+            min(memberships["sleep"]["Kötü"], memberships["study"]["Düşük"]),
+            "Düşük"
+        ),
+        (
+            "IF uyku iyi AND mola dengeli AND çalışma orta THEN verimlilik yüksek",
+            min(memberships["sleep"]["İyi"], memberships["break"]["Dengeli"], memberships["study"]["Orta"]),
+            "Yüksek"
+        ),
+        (
+            "IF mola aşırı AND çalışma düşük THEN verimlilik düşük",
+            min(memberships["break"]["Aşırı"], memberships["study"]["Düşük"]),
+            "Düşük"
+        ),
+        (
+            "IF mola aşırı AND telefon fazla THEN verimlilik düşük",
+            min(memberships["break"]["Aşırı"], memberships["phone"]["Fazla"]),
+            "Düşük"
+        ),
+        (
+            "IF mola yetersiz AND çalışma yüksek THEN verimlilik yüksek",
+            min(memberships["break"]["Yetersiz"], memberships["study"]["Yüksek"]),
+            "Yüksek"
+        ),
+        (
+            "IF telefon az AND uyku iyi AND mola dengeli THEN verimlilik çok yüksek",
+            min(memberships["phone"]["Az"], memberships["sleep"]["İyi"], memberships["break"]["Dengeli"]),
+            "Çok Yüksek"
+        ),
+    ]
 
-                    activation = min(
-                        study_degree,
-                        phone_degree,
-                        sleep_degree,
-                        break_degree
-                    )
+    for rule_text, activation, output_label in rules:
+        if activation <= 0:
+            continue
 
-                    if activation <= 0:
-                        continue
+        output_mf = mfs["efficiency"][output_label]
+        clipped = np.fmin(activation, output_mf)
+        aggregated = np.fmax(aggregated, clipped)
 
-                    rule_score = (
-                        study_scores[study_label] * 0.35 +
-                        phone_scores[phone_label] * 0.25 +
-                        sleep_scores[sleep_label] * 0.25 +
-                        break_scores[break_label] * 0.15
-                    )
-
-                    output_label = output_label_from_score(rule_score)
-                    output_mf = mfs["efficiency"][output_label]
-
-                    clipped = np.fmin(activation, output_mf)
-                    aggregated = np.fmax(aggregated, clipped)
-
-                    active_rules.append({
-                        "rule": (
-                            f"Çalışma {study_label.lower()}, "
-                            f"telefon {phone_label.lower()}, "
-                            f"uyku {sleep_label.lower()}, "
-                            f"mola {break_label.lower()}"
-                        ),
-                        "activation": round(float(activation), 3),
-                        "output": output_label,
-                        "rule_score": round(float(rule_score), 2)
-                    })
+        active_rules.append({
+            "rule": rule_text,
+            "activation": round(float(activation), 3),
+            "output": output_label
+        })
 
     if np.sum(aggregated) == 0:
         score = 0
@@ -168,7 +200,7 @@ def calculate_efficiency(study_hours, phone_hours, sleep_quality, break_quality)
         active_rules,
         key=lambda x: x["activation"],
         reverse=True
-    )[:12]
+    )
 
     return {
         "score": round(float(score), 2),
