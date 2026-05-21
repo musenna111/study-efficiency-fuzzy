@@ -285,3 +285,9 @@ Grafiksel analizler sayesinde üyelik fonksiyonları, aktif kurallar ve durulaş
 - NumPy Documentation
 - Matplotlib Documentation
 - Bulanık Mantık Ders Notları
+
+---
+
+# Geliştirici
+
+Müsenna Özbek
